@@ -941,7 +941,469 @@ fileLogger.log('error', 'Something went wrong!');`,
         ],
         correctAnswer: 2,
         explanation: 'In Factory Method pattern, the concrete factory (creator) subclasses decide which specific product class to instantiate, not the client code.'
+             }
+     ]
+   },
+   {
+    id: 'observer-pattern',
+    title: 'Observer Pattern',
+    slug: 'observer-pattern',
+    description: 'Defines a one-to-many dependency between objects so that when one object changes state, all dependents are notified',
+    icon: '👁️',
+    sections: [
+      {
+        id: 'observer-definition',
+        title: 'What is the Observer Pattern?',
+        content: `The **Observer Pattern** is a behavioral design pattern that defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
+
+**Key Characteristics:**
+- Defines a subscription mechanism to notify multiple objects
+- Promotes loose coupling between subject and observers
+- Supports broadcast communication
+- Dynamic relationships - observers can be added/removed at runtime
+
+**When to Use Observer Pattern:**
+- When changes to one object require changing many others
+- When an object should notify other objects without making assumptions about who they are
+- When you want to create a subscription system
+- For implementing event handling systems
+- In Model-View architectures (MVC, MVP, MVVM)
+
+**Real-world analogy**: Think of a YouTube channel (subject) and its subscribers (observers). When the channel uploads a new video, all subscribers get notified automatically. Subscribers can subscribe or unsubscribe at any time, and the channel doesn't need to know who its subscribers are.
+
+**Benefits:**
+- Loose coupling between subject and observers
+- Dynamic relationships
+- Supports broadcast communication
+- Adheres to Open/Closed Principle
+
+**Participants:**
+- **Subject**: The object being observed
+- **Observer**: The interface for objects that should be notified
+- **ConcreteSubject**: Stores state and notifies observers
+- **ConcreteObserver**: Implements observer interface`,
+        codeExample: {
+          id: 'observer-basic',
+          title: 'Basic Observer Pattern Implementation',
+          language: 'javascript',
+          code: `// ❌ WRONG: Tight coupling without Observer pattern
+class NewsAgency {
+  constructor() {
+    this.news = '';
+    this.newsChannelA = null;
+    this.newsChannelB = null;
+  }
+  
+  setNews(news) {
+    this.news = news;
+    // ❌ Tightly coupled - agency must know about specific channels
+    if (this.newsChannelA) {
+      this.newsChannelA.update(news);
+    }
+    if (this.newsChannelB) {
+      this.newsChannelB.update(news);
+    }
+    // What if we want to add more channels? Must modify this code!
+  }
+}
+
+// ✅ CORRECT: Using Observer Pattern
+
+// Step 1: Define Observer interface
+class Observer {
+  update(data) {
+    throw new Error('update method must be implemented');
+  }
+}
+
+// Step 2: Define Subject interface
+class Subject {
+  constructor() {
+    this.observers = [];
+  }
+  
+  subscribe(observer) {
+    this.observers.push(observer);
+    console.log('Observer subscribed');
+  }
+  
+  unsubscribe(observer) {
+    this.observers = this.observers.filter(obs => obs !== observer);
+    console.log('Observer unsubscribed');
+  }
+  
+  notify(data) {
+    console.log(\`Notifying \${this.observers.length} observers\`);
+    this.observers.forEach(observer => {
+      observer.update(data);
+    });
+  }
+}
+
+// Step 3: Implement Concrete Subject
+class NewsAgencyObserver extends Subject {
+  constructor() {
+    super();
+    this.news = '';
+  }
+  
+  setNews(news) {
+    console.log(\`📰 Breaking News: \${news}\`);
+    this.news = news;
+    this.notify(news); // ✅ Automatically notify all observers
+  }
+  
+  getNews() {
+    return this.news;
+  }
+}
+
+// Step 4: Implement Concrete Observers
+class NewsChannel extends Observer {
+  constructor(name) {
+    super();
+    this.name = name;
+  }
+  
+  update(news) {
+    console.log(\`📺 \${this.name} broadcasting: \${news}\`);
+  }
+}
+
+class NewsWebsite extends Observer {
+  constructor(name) {
+    super();
+    this.name = name;
+  }
+  
+  update(news) {
+    console.log(\`🌐 \${this.name} publishing: \${news}\`);
+  }
+}
+
+class MobileApp extends Observer {
+  constructor(name) {
+    super();
+    this.name = name;
+  }
+  
+  update(news) {
+    console.log(\`📱 \${this.name} sending push notification: \${news}\`);
+  }
+}
+
+// Usage: Loose coupling and dynamic subscriptions
+const newsAgency = new NewsAgencyObserver();
+
+const cnn = new NewsChannel('CNN');
+const bbc = new NewsChannel('BBC');
+const newsWebsite = new NewsWebsite('News.com');
+const mobileApp = new MobileApp('NewsApp');
+
+// Subscribe observers
+newsAgency.subscribe(cnn);
+newsAgency.subscribe(bbc);
+newsAgency.subscribe(newsWebsite);
+newsAgency.subscribe(mobileApp);
+
+// Publish news - all observers are notified automatically
+newsAgency.setNews('Major earthquake hits the coast!');
+
+// Dynamic unsubscription
+newsAgency.unsubscribe(bbc);
+newsAgency.setNews('Stock market reaches new high!'); // BBC won't be notified`,
+          explanation: 'The Observer pattern decouples the news agency from specific channels. The agency only knows about the observer interface, and observers can be added/removed dynamically without changing the agency code.',
+          highlightLines: [28, 34, 38, 48, 85, 94]
+        }
+      },
+      {
+        id: 'observer-advanced',
+        title: 'Advanced Observer Implementations',
+        content: `Let's explore sophisticated Observer pattern implementations for modern applications:
+
+**Advanced Features:**
+1. **Event-specific Observers**: Subscribe to specific event types
+2. **Async Observers**: Handle asynchronous notifications
+3. **Weighted Observers**: Priority-based notification order
+4. **Memory Management**: Automatic cleanup and weak references
+
+**Modern Use Cases:**
+- **State Management**: Redux, MobX, Vuex
+- **Reactive Programming**: RxJS, Observables
+- **Event Systems**: DOM events, Custom events
+- **Real-time Applications**: Chat apps, Live feeds`,
+        codeExample: {
+          id: 'observer-advanced-examples',
+          title: 'Advanced Observer Pattern Examples',
+          language: 'javascript',
+          code: `// 1. ✅ Event-Specific Observer System
+class EventEmitter {
+  constructor() {
+    this.events = new Map();
+  }
+  
+  on(eventType, callback, priority = 0) {
+    if (!this.events.has(eventType)) {
+      this.events.set(eventType, []);
+    }
+    
+    const listener = { callback, priority, id: Date.now() + Math.random() };
+    this.events.get(eventType).push(listener);
+    
+    // Sort by priority (higher priority first)
+    this.events.get(eventType).sort((a, b) => b.priority - a.priority);
+    
+    console.log(\`🔗 Subscribed to \${eventType} with priority \${priority}\`);
+    
+    // Return unsubscribe function
+    return () => this.off(eventType, listener.id);
+  }
+  
+  off(eventType, listenerId) {
+    if (this.events.has(eventType)) {
+      const listeners = this.events.get(eventType);
+      const index = listeners.findIndex(listener => listener.id === listenerId);
+      if (index > -1) {
+        listeners.splice(index, 1);
+        console.log(\`🔓 Unsubscribed from \${eventType}\`);
+      }
+    }
+  }
+  
+  emit(eventType, data) {
+    if (this.events.has(eventType)) {
+      const listeners = this.events.get(eventType);
+      console.log(\`📢 Emitting \${eventType} to \${listeners.length} listeners\`);
+      
+      listeners.forEach(listener => {
+        try {
+          listener.callback(data);
+        } catch (error) {
+          console.error(\`Error in \${eventType} listener:\`, error);
+        }
+      });
+    }
+  }
+  
+  async emitAsync(eventType, data) {
+    if (this.events.has(eventType)) {
+      const listeners = this.events.get(eventType);
+      console.log(\`📢 Async emitting \${eventType} to \${listeners.length} listeners\`);
+      
+      const promises = listeners.map(listener => {
+        try {
+          return Promise.resolve(listener.callback(data));
+        } catch (error) {
+          console.error(\`Error in \${eventType} listener:\`, error);
+          return Promise.resolve();
+        }
+      });
+      
+      await Promise.all(promises);
+    }
+  }
+}
+
+// 2. ✅ State Management with Observer Pattern
+class Store {
+  constructor(initialState = {}) {
+    this.state = { ...initialState };
+    this.listeners = new Set();
+    this.middleware = [];
+  }
+  
+  subscribe(listener) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+  
+  getState() {
+    return { ...this.state };
+  }
+  
+  dispatch(action) {
+    console.log(\`🚀 Dispatching action: \${action.type}\`);
+    
+    // Apply middleware
+    let processedAction = action;
+    for (const middleware of this.middleware) {
+      processedAction = middleware(processedAction, this.state);
+    }
+    
+    const prevState = { ...this.state };
+    this.state = this.reducer(this.state, processedAction);
+    
+    // Notify listeners of state change
+    this.listeners.forEach(listener => {
+      listener(this.state, prevState, processedAction);
+    });
+  }
+  
+  reducer(state, action) {
+    switch (action.type) {
+      case 'SET_USER':
+        return { ...state, user: action.payload };
+      case 'SET_THEME':
+        return { ...state, theme: action.payload };
+      case 'INCREMENT_COUNTER':
+        return { ...state, counter: (state.counter || 0) + 1 };
+      default:
+        return state;
+    }
+  }
+  
+  addMiddleware(middleware) {
+    this.middleware.push(middleware);
+  }
+}
+
+// 3. ✅ Real-time Chat System with Observer
+class ChatRoom {
+  constructor(name) {
+    this.name = name;
+    this.participants = new Map();
+    this.messages = [];
+    this.eventEmitter = new EventEmitter();
+  }
+  
+  join(user) {
+    this.participants.set(user.id, user);
+    console.log(\`👤 \${user.name} joined \${this.name}\`);
+    
+    this.eventEmitter.emit('user-joined', {
+      user,
+      timestamp: new Date(),
+      participants: Array.from(this.participants.values())
+    });
+  }
+  
+  leave(userId) {
+    const user = this.participants.get(userId);
+    if (user) {
+      this.participants.delete(userId);
+      console.log(\`🚪 \${user.name} left \${this.name}\`);
+      
+      this.eventEmitter.emit('user-left', {
+        user,
+        timestamp: new Date(),
+        participants: Array.from(this.participants.values())
+      });
+    }
+  }
+  
+  sendMessage(senderId, content) {
+    const sender = this.participants.get(senderId);
+    if (!sender) {
+      throw new Error('User not in chat room');
+    }
+    
+    const message = {
+      id: Date.now(),
+      sender: sender.name,
+      content,
+      timestamp: new Date()
+    };
+    
+    this.messages.push(message);
+    console.log(\`💬 \${sender.name}: \${content}\`);
+    
+    this.eventEmitter.emit('new-message', message);
+  }
+  
+  // Event subscription methods
+  onUserJoined(callback) { return this.eventEmitter.on('user-joined', callback); }
+  onUserLeft(callback) { return this.eventEmitter.on('user-left', callback); }
+  onNewMessage(callback) { return this.eventEmitter.on('new-message', callback); }
+}
+
+// Usage Examples
+console.log('=== Event Emitter Example ===');
+const eventBus = new EventEmitter();
+
+// Subscribe with different priorities
+const unsubHigh = eventBus.on('data-update', (data) => {
+  console.log('🔥 High priority handler:', data);
+}, 10);
+
+const unsubLow = eventBus.on('data-update', (data) => {
+  console.log('⭐ Low priority handler:', data);
+}, 1);
+
+eventBus.emit('data-update', { value: 42 });
+
+console.log('\\n=== Store Example ===');
+const store = new Store({ counter: 0, theme: 'light' });
+
+// Subscribe to state changes
+const unsubscribe = store.subscribe((newState, prevState, action) => {
+  console.log('📊 State changed:', { action: action.type, newState });
+});
+
+store.dispatch({ type: 'INCREMENT_COUNTER' });
+store.dispatch({ type: 'SET_THEME', payload: 'dark' });
+
+console.log('\\n=== Chat Room Example ===');
+const chatRoom = new ChatRoom('General Chat');
+
+// Subscribe to chat events
+chatRoom.onUserJoined((data) => {
+  console.log(\`🎉 Welcome \${data.user.name}! Room has \${data.participants.length} participants\`);
+});
+
+chatRoom.onNewMessage((message) => {
+  console.log(\`📝 New message from \${message.sender}: \${message.content}\`);
+});
+
+// Simulate chat activity
+const alice = { id: 1, name: 'Alice' };
+const bob = { id: 2, name: 'Bob' };
+
+chatRoom.join(alice);
+chatRoom.join(bob);
+chatRoom.sendMessage(1, 'Hello everyone!');
+chatRoom.sendMessage(2, 'Hi Alice! 👋');`,
+          explanation: 'These advanced examples show event-specific subscriptions, state management patterns, and real-time communication systems using the Observer pattern.',
+          highlightLines: [7, 64, 84, 107, 140]
+        }
+      }
+    ],
+    quiz: [
+      {
+        id: 'observer-quiz-1',
+        question: 'What is the main purpose of the Observer pattern?',
+        options: [
+          'To create a single instance of a class',
+          'To define a one-to-many dependency between objects for automatic notification',
+          'To hide implementation details from clients',
+          'To create families of related objects'
+        ],
+        correctAnswer: 1,
+        explanation: 'The Observer pattern defines a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.'
+      },
+      {
+        id: 'observer-quiz-2',
+        question: 'Which of the following is NOT a benefit of the Observer pattern?',
+        options: [
+          'Loose coupling between subject and observers',
+          'Dynamic subscription and unsubscription',
+          'Guaranteed order of observer notifications',
+          'Broadcast communication capability'
+        ],
+        correctAnswer: 2,
+        explanation: 'The Observer pattern does NOT guarantee the order of observer notifications unless specifically implemented. The order typically depends on the subscription order or priority system if implemented.'
+      },
+      {
+        id: 'observer-quiz-3',
+        question: 'In which scenario is the Observer pattern most appropriate?',
+        options: [
+          'When you need to create objects without specifying their exact class',
+          'When one object needs to notify multiple dependent objects of state changes',
+          'When you want to provide a simplified interface to a complex subsystem',
+          'When you need to ensure only one instance of a class exists'
+        ],
+        correctAnswer: 1,
+        explanation: 'The Observer pattern is most appropriate when one object needs to notify multiple dependent objects of state changes, such as in event systems or model-view architectures.'
       }
     ]
-  }
+   }
 ]; 
