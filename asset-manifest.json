@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/machine-coding-platform/static/css/main.70821f5b.css",
+    "main.js": "/machine-coding-platform/static/js/main.ac7e61c0.js",
+    "static/js/453.f1b148fd.chunk.js": "/machine-coding-platform/static/js/453.f1b148fd.chunk.js",
+    "index.html": "/machine-coding-platform/index.html",
+    "main.70821f5b.css.map": "/machine-coding-platform/static/css/main.70821f5b.css.map",
+    "main.ac7e61c0.js.map": "/machine-coding-platform/static/js/main.ac7e61c0.js.map",
+    "453.f1b148fd.chunk.js.map": "/machine-coding-platform/static/js/453.f1b148fd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.70821f5b.css",
+    "static/js/main.ac7e61c0.js"
+  ]
+}
