@@ -20,7 +20,6 @@ const TypewriterSection: React.FC<TypewriterSectionProps> = ({
   showThinking = true
 }) => {
   const [currentParagraph, setCurrentParagraph] = useState(0);
-  const [completedParagraphs, setCompletedParagraphs] = useState<number[]>([]);
   const [isThinking, setIsThinking] = useState(showThinking);
 
   useEffect(() => {
@@ -34,8 +33,6 @@ const TypewriterSection: React.FC<TypewriterSectionProps> = ({
   }, [showThinking]);
 
   const handleParagraphComplete = () => {
-    setCompletedParagraphs(prev => [...prev, currentParagraph]);
-    
     if (currentParagraph < content.length - 1) {
       setTimeout(() => {
         setCurrentParagraph(prev => prev + 1);
