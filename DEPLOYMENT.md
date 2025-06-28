@@ -13,7 +13,7 @@ This guide will help you deploy your Machine Coding Learning Platform to GitHub 
 ### 1. Create GitHub Repository
 
 1. Go to [GitHub](https://github.com) and create a new repository
-2. Name it something like `machine-coding-platform` or `oop-learning-platform`
+2. Name it `interactive-learning` (or your preferred name)
 3. Make it **public** (required for free GitHub Pages)
 4. Don't initialize with README since you already have code
 
@@ -27,7 +27,7 @@ Edit `package.json` and update the homepage field:
 
 **Example:**
 ```json
-"homepage": "https://johnsmith.github.io/machine-coding-platform"
+"homepage": "https://dharmveerjakhar.github.io/interactive-learning"
 ```
 
 ### 3. Initialize Git and Push Code
@@ -98,10 +98,10 @@ npm run deploy
 
 ## 🎯 Example URLs
 
-If your GitHub username is `johnsmith` and repository is `machine-coding-platform`:
+If your GitHub username is `dharmveerjakhar` and repository is `interactive-learning`:
 
-- **Repository**: https://github.com/johnsmith/machine-coding-platform
-- **Live Site**: https://johnsmith.github.io/machine-coding-platform
+- **Repository**: https://github.com/dharmveerjakhar/interactive-learning
+- **Live Site**: https://dharmveerjakhar.github.io/interactive-learning
 
 ## 🔧 Troubleshooting
 

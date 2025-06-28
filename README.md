@@ -4,7 +4,7 @@ An interactive web application for mastering machine coding interviews through c
 
 ## 🌟 Live Demo
 
-🚀 **[Visit Live Platform](https://your-username.github.io/machine-coding-platform)** *(Update with your actual GitHub Pages URL)*
+🚀 **[Visit Live Platform](https://dharmveerjakhar.github.io/interactive-learning)**
 
 ## ✨ Features
 
@@ -31,7 +31,7 @@ An interactive web application for mastering machine coding interviews through c
 ## 🚀 Quick Start
 
 ### For Users
-1. Visit the [live platform](https://your-username.github.io/machine-coding-platform)
+1. Visit the [live platform](https://dharmveerjakhar.github.io/interactive-learning)
 2. Start with **OOP Fundamentals** module
 3. Progress through concepts at your own pace
 4. Take quizzes to test your understanding
@@ -40,8 +40,8 @@ An interactive web application for mastering machine coding interviews through c
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/machine-coding-platform.git
-cd machine-coding-platform
+git clone https://github.com/dharmveerjakhar/interactive-learning.git
+cd interactive-learning/oop-learning-platform
 
 # Install dependencies
 npm install
