@@ -61,8 +61,7 @@ export const learningCategories: LearningCategory[] = [
     type: 'category',
     difficulty: 'beginner',
     estimatedTime: '15+ hours',
-    modules: machineCodingModules,
-    progress: 25 // Based on OOP Fundamentals being complete
+    modules: machineCodingModules
   }
 ];
 

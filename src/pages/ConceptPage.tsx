@@ -4,8 +4,9 @@ import { learningModules } from '../data/learningModules';
 import { ArrowLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import CodeExample from '../components/CodeExample';
 import QuizSection from '../components/QuizSection';
+import TypewriterSection from '../components/TypewriterSection';
 import { motion } from 'framer-motion';
-import { formatContent } from '../utils/formatContent';
+import { contentToParagraphs } from '../utils/formatContent';
 
 const ConceptPage: React.FC = () => {
   const { moduleSlug, conceptSlug } = useParams<{ moduleSlug: string; conceptSlug: string }>();
@@ -13,12 +14,17 @@ const ConceptPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState(0);
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
   const [quizStarted, setQuizStarted] = useState(false);
+  const [contentLoaded, setContentLoaded] = useState(false);
 
   const module = learningModules.find(m => m.slug === moduleSlug);
   const concept = module?.concepts.find(c => c.slug === conceptSlug);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setContentLoaded(false);
+    // Small delay to trigger typewriter effect on section change
+    const timer = setTimeout(() => setContentLoaded(true), 100);
+    return () => clearTimeout(timer);
   }, [activeSection]);
 
   if (!module || !concept) {
@@ -46,9 +52,9 @@ const ConceptPage: React.FC = () => {
     }
   };
 
-  const progress = Math.round(
-    ((completedSections.size + (quizStarted ? 1 : 0)) / (concept.sections.length + 1)) * 100
-  );
+  const handleTypewriterComplete = () => {
+    // Auto-enable the next button after typewriter completes
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -69,17 +75,6 @@ const ConceptPage: React.FC = () => {
             <p className="text-gray-600">{concept.description}</p>
           </div>
         </div>
-
-        {/* Progress Bar */}
-        <div className="bg-gray-200 rounded-full h-2">
-          <motion.div
-            className="bg-blue-600 h-2 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
-        <p className="text-sm text-gray-600 mt-2">{progress}% Complete</p>
       </div>
 
       {/* Content */}
@@ -114,13 +109,22 @@ const ConceptPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
               {concept.sections[activeSection].title}
             </h2>
             
-            <div className="prose prose-lg max-w-none text-gray-700">
-              {formatContent(concept.sections[activeSection].content)}
-            </div>
+            {/* Typewriter Content */}
+            {contentLoaded && (
+              <div className="prose prose-lg max-w-none">
+                <TypewriterSection
+                  content={contentToParagraphs(concept.sections[activeSection].content)}
+                  speed={25}
+                  paragraphDelay={300}
+                  onComplete={handleTypewriterComplete}
+                  showThinking={true}
+                />
+              </div>
+            )}
 
             {concept.sections[activeSection].codeExample && (
               <div className="mt-8">

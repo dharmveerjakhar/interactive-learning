@@ -2,7 +2,6 @@ import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { learningModules } from '../data/learningModules';
 import { ArrowLeft, ArrowRight, CheckCircle, Clock, Award } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const ModulePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -99,23 +98,6 @@ const ModulePage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {module.progress !== undefined && (
-            <div className="mb-4">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Module Progress</span>
-                <span>{module.progress}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <motion.div
-                  className="bg-blue-600 h-3 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${module.progress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -160,21 +142,6 @@ const ModulePage: React.FC = () => {
                   </div>
                   <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                 </div>
-
-                {concept.progress !== undefined && (
-                  <div className="mt-4">
-                    <div className="flex justify-between text-sm text-gray-600 mb-1">
-                      <span>Progress</span>
-                      <span>{concept.progress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${concept.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
             </Link>
           ))}

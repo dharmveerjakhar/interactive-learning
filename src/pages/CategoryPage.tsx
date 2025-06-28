@@ -47,21 +47,6 @@ const CategoryPage: React.FC = () => {
             <span className="text-gray-600">{category.modules.length} modules</span>
           </div>
         </div>
-
-        {category.progress !== undefined && (
-          <div className="mt-6 max-w-md mx-auto">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Overall Progress</span>
-              <span>{category.progress}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${category.progress}%` }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Modules grid */}
@@ -123,21 +108,6 @@ const CategoryPage: React.FC = () => {
                 </div>
                 <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
               </div>
-
-              {module.progress !== undefined && (
-                <div className="mt-4">
-                  <div className="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>Progress</span>
-                    <span>{module.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${module.progress}%` }}
-                    />
-                  </div>
-                </div>
-              )}
               
               {module.concepts.length === 0 && (
                 <div className="text-center py-4">
