@@ -24,6 +24,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Home className="h-4 w-4" />
                 Home
               </Link>
+              <Link
+                to="/demo/typewriter"
+                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2"
+              >
+                🎭 Demo
+              </Link>
             </nav>
           </div>
         </div>
