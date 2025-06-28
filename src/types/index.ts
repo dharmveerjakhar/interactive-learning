@@ -53,4 +53,18 @@ export interface LearningModule {
   concepts: OOPConcept[];
   completed?: boolean;
   progress?: number;
+}
+
+export interface LearningCategory {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  icon: string;
+  type: 'category';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  estimatedTime: string;
+  modules: LearningModule[];
+  completed?: boolean;
+  progress?: number;
 } 

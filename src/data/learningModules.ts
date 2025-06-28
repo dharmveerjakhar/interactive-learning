@@ -1,7 +1,8 @@
-import { LearningModule } from '../types';
+import { LearningModule, LearningCategory } from '../types';
 import { oopConcepts } from './oopConcepts';
 
-export const learningModules: LearningModule[] = [
+// Individual modules that will be under Machine Coding category
+export const machineCodingModules: LearningModule[] = [
   {
     id: 'oop-fundamentals',
     title: 'OOP Fundamentals',
@@ -45,16 +46,24 @@ export const learningModules: LearningModule[] = [
     difficulty: 'intermediate',
     estimatedTime: '5+ hours',
     concepts: [] // Will be populated later
-  },
-  {
-    id: 'system-design-basics',
-    title: 'System Design Basics',
-    slug: 'system-design-basics',
-    description: 'Learn low-level system design concepts for machine coding interviews',
-    icon: '🏛️',
-    type: 'concepts',
-    difficulty: 'advanced',
-    estimatedTime: '6+ hours',
-    concepts: [] // Will be populated later
   }
-]; 
+];
+
+// Main categories for the homepage
+export const learningCategories: LearningCategory[] = [
+  {
+    id: 'machine-coding',
+    title: 'Machine Coding',
+    slug: 'machine-coding',
+    description: 'Master machine coding interviews with OOP fundamentals, SOLID principles, design patterns, and practice problems',
+    icon: '💻',
+    type: 'category',
+    difficulty: 'beginner',
+    estimatedTime: '15+ hours',
+    modules: machineCodingModules,
+    progress: 25 // Based on OOP Fundamentals being complete
+  }
+];
+
+// For backward compatibility, export existing modules array
+export const learningModules = machineCodingModules; 
