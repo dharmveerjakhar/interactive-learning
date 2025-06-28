@@ -14,7 +14,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center space-x-3">
               <BookOpen className="h-8 w-8 text-blue-600" />
-              <h1 className="text-xl font-bold text-gray-900">Machine Coding Academy</h1>
+              <h1 className="text-xl font-bold text-gray-900">Interactive Learning Platform</h1>
             </Link>
             <nav className="flex items-center space-x-4">
               <Link
