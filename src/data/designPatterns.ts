@@ -552,6 +552,395 @@ console.log(APIClient.getInstance() === api); // true`,
         ],
         correctAnswer: 2,
         explanation: 'Singletons can make unit testing difficult because they maintain global state, and they can create tight coupling between classes that depend on the singleton instance.'
+             }
+     ]
+   },
+   {
+    id: 'factory-method-pattern',
+    title: 'Factory Method Pattern',
+    slug: 'factory-method-pattern',
+    description: 'Creates objects without specifying the exact class to create',
+    icon: '🏭',
+    sections: [
+      {
+        id: 'factory-definition',
+        title: 'What is the Factory Method Pattern?',
+        content: `The **Factory Method Pattern** is a creational design pattern that provides an interface for creating objects without specifying the exact class of object that will be created.
+
+**Key Characteristics:**
+- Creates objects through a common interface
+- Subclasses decide which class to instantiate
+- Promotes loose coupling between creator and products
+- Follows the "Don't call us, we'll call you" principle
+
+**When to Use Factory Method:**
+- When you don't know beforehand the exact types of objects your code should work with
+- When you want to provide users a way to extend internal components
+- When you want to save system resources by reusing existing objects
+- When you need to separate object creation from object usage
+
+**Real-world analogy**: Think of a restaurant kitchen. When you order "pasta," you don't specify exactly how to make it. The kitchen (factory) decides whether to make spaghetti, penne, or lasagna based on what you ordered. The waiter (client) doesn't need to know the specific cooking process.
+
+**Benefits:**
+- Loose coupling between creator and concrete products
+- Single Responsibility Principle compliance
+- Open/Closed Principle compliance
+- Easy to extend with new product types
+
+**Structure:**
+- **Creator**: Abstract class with factory method
+- **Concrete Creator**: Implements factory method
+- **Product**: Interface for objects factory creates
+- **Concrete Product**: Specific implementations`,
+        codeExample: {
+          id: 'factory-basic',
+          title: 'Basic Factory Method Implementation',
+          language: 'javascript',
+          code: `// ❌ WRONG: Creating objects directly without factory
+class EmailNotification {
+  send(message) {
+    console.log(\`Sending email: \${message}\`);
+  }
+}
+
+class SMSNotification {
+  send(message) {
+    console.log(\`Sending SMS: \${message}\`);
+  }
+}
+
+// Problem: Client code is tightly coupled to specific classes
+function sendNotification(type, message) {
+  let notification;
+  if (type === 'email') {
+    notification = new EmailNotification(); // ❌ Direct coupling
+  } else if (type === 'sms') {
+    notification = new SMSNotification(); // ❌ Direct coupling
+  }
+  notification.send(message);
+}
+
+// ✅ CORRECT: Using Factory Method Pattern
+
+// Step 1: Define Product interface
+class Notification {
+  send(message) {
+    throw new Error('send method must be implemented');
+  }
+}
+
+// Step 2: Create Concrete Products
+class EmailNotificationProduct extends Notification {
+  send(message) {
+    console.log(\`📧 Email sent: \${message}\`);
+    console.log('✓ Delivered to inbox');
+  }
+}
+
+class SMSNotificationProduct extends Notification {
+  send(message) {
+    console.log(\`📱 SMS sent: \${message}\`);
+    console.log('✓ Delivered to phone');
+  }
+}
+
+class PushNotificationProduct extends Notification {
+  send(message) {
+    console.log(\`🔔 Push notification sent: \${message}\`);
+    console.log('✓ Delivered to device');
+  }
+}
+
+// Step 3: Define Creator (Factory) interface
+class NotificationFactory {
+  createNotification() {
+    throw new Error('createNotification method must be implemented');
+  }
+  
+  sendNotification(message) {
+    const notification = this.createNotification();
+    notification.send(message);
+  }
+}
+
+// Step 4: Create Concrete Factories
+class EmailNotificationFactory extends NotificationFactory {
+  createNotification() {
+    return new EmailNotificationProduct();
+  }
+}
+
+class SMSNotificationFactory extends NotificationFactory {
+  createNotification() {
+    return new SMSNotificationProduct();
+  }
+}
+
+class PushNotificationFactory extends NotificationFactory {
+  createNotification() {
+    return new PushNotificationProduct();
+  }
+}
+
+// Usage: Client code is decoupled from specific classes
+function sendNotificationWithFactory(factory, message) {
+  factory.sendNotification(message); // ✅ Uses factory method
+}
+
+// Usage examples
+const emailFactory = new EmailNotificationFactory();
+const smsFactory = new SMSNotificationFactory();
+const pushFactory = new PushNotificationFactory();
+
+sendNotificationWithFactory(emailFactory, 'Welcome to our service!');
+sendNotificationWithFactory(smsFactory, 'Your verification code is 123456');
+sendNotificationWithFactory(pushFactory, 'You have a new message');`,
+          explanation: 'The Factory Method pattern decouples object creation from usage. Client code works with factories rather than creating objects directly, making it easy to add new types without changing existing code.',
+          highlightLines: [44, 51, 57, 66, 75]
+        }
+      },
+      {
+        id: 'factory-real-world',
+        title: 'Real-World Factory Examples',
+        content: `Let's explore practical Factory Method implementations for common scenarios:
+
+**1. Document Creation System**: Creating different types of documents
+**2. Payment Processing**: Different payment methods
+**3. Database Connections**: Different database drivers
+**4. UI Components**: Different platform-specific components
+
+**Advanced Factory Patterns:**
+- **Abstract Factory**: Families of related objects
+- **Factory Registry**: Dynamic factory selection
+- **Parameterized Factory**: Factory with configuration
+- **Singleton Factory**: Combining Singleton with Factory`,
+        codeExample: {
+          id: 'factory-real-world-examples',
+          title: 'Practical Factory Implementations',
+          language: 'javascript',
+          code: `// 1. ✅ Document Creation Factory
+class Document {
+  create() { throw new Error('Must implement create method'); }
+  save() { throw new Error('Must implement save method'); }
+  export() { throw new Error('Must implement export method'); }
+}
+
+class PDFDocument extends Document {
+  create() {
+    console.log('📄 Creating PDF document...');
+    this.content = [];
+    this.metadata = { format: 'PDF', created: new Date() };
+  }
+  
+  save() {
+    console.log('💾 Saving PDF to disk...');
+  }
+  
+  export() {
+    console.log('📤 Exporting PDF for download...');
+    return { type: 'application/pdf', data: this.content };
+  }
+}
+
+class WordDocument extends Document {
+  create() {
+    console.log('📝 Creating Word document...');
+    this.content = [];
+    this.metadata = { format: 'DOCX', created: new Date() };
+  }
+  
+  save() {
+    console.log('💾 Saving Word document...');
+  }
+  
+  export() {
+    console.log('📤 Exporting Word document...');
+    return { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', data: this.content };
+  }
+}
+
+class DocumentFactory {
+  static createDocument(type) {
+    switch (type.toLowerCase()) {
+      case 'pdf':
+        return new PDFDocument();
+      case 'word':
+      case 'docx':
+        return new WordDocument();
+      default:
+        throw new Error(\`Unsupported document type: \${type}\`);
+    }
+  }
+}
+
+// 2. ✅ Payment Method Factory
+class PaymentMethod {
+  processPayment(amount) { throw new Error('Must implement processPayment'); }
+  validatePayment(data) { throw new Error('Must implement validatePayment'); }
+}
+
+class CreditCardPayment extends PaymentMethod {
+  processPayment(amount) {
+    console.log(\`💳 Processing credit card payment of $\${amount}\`);
+    // Credit card processing logic
+    return { success: true, transactionId: 'CC_' + Date.now() };
+  }
+  
+  validatePayment(data) {
+    return data.cardNumber && data.expiryDate && data.cvv;
+  }
+}
+
+class PayPalPayment extends PaymentMethod {
+  processPayment(amount) {
+    console.log(\`🟦 Processing PayPal payment of $\${amount}\`);
+    // PayPal API integration
+    return { success: true, transactionId: 'PP_' + Date.now() };
+  }
+  
+  validatePayment(data) {
+    return data.email && data.password;
+  }
+}
+
+class CryptocurrencyPayment extends PaymentMethod {
+  processPayment(amount) {
+    console.log(\`₿ Processing cryptocurrency payment of $\${amount}\`);
+    // Blockchain transaction
+    return { success: true, transactionId: 'BTC_' + Date.now() };
+  }
+  
+  validatePayment(data) {
+    return data.walletAddress && data.privateKey;
+  }
+}
+
+class PaymentFactory {
+  static createPaymentMethod(type) {
+    const factories = {
+      'credit-card': () => new CreditCardPayment(),
+      'paypal': () => new PayPalPayment(),
+      'crypto': () => new CryptocurrencyPayment(),
+      'bitcoin': () => new CryptocurrencyPayment()
+    };
+    
+    const factory = factories[type.toLowerCase()];
+    if (!factory) {
+      throw new Error(\`Unsupported payment method: \${type}\`);
+    }
+    
+    return factory();
+  }
+}
+
+// 3. ✅ Logger Factory with Configuration
+class Logger {
+  log(level, message) { throw new Error('Must implement log'); }
+}
+
+class ConsoleLogger extends Logger {
+  log(level, message) {
+    const timestamp = new Date().toISOString();
+    console.log(\`[\${timestamp}] [\${level.toUpperCase()}] \${message}\`);
+  }
+}
+
+class FileLogger extends Logger {
+  constructor(filename = 'app.log') {
+    super();
+    this.filename = filename;
+  }
+  
+  log(level, message) {
+    const timestamp = new Date().toISOString();
+    const logEntry = \`[\${timestamp}] [\${level.toUpperCase()}] \${message}\\n\`;
+    console.log(\`Writing to \${this.filename}: \${logEntry.trim()}\`);
+    // In real implementation: fs.appendFile(this.filename, logEntry)
+  }
+}
+
+class DatabaseLogger extends Logger {
+  log(level, message) {
+    const logData = {
+      timestamp: new Date(),
+      level: level.toUpperCase(),
+      message,
+      id: Date.now()
+    };
+    console.log('Inserting log to database:', logData);
+    // In real implementation: database.insert('logs', logData)
+  }
+}
+
+class LoggerFactory {
+  static createLogger(type, config = {}) {
+    switch (type.toLowerCase()) {
+      case 'console':
+        return new ConsoleLogger();
+      case 'file':
+        return new FileLogger(config.filename);
+      case 'database':
+        return new DatabaseLogger();
+      default:
+        throw new Error(\`Unknown logger type: \${type}\`);
+    }
+  }
+}
+
+// Usage Examples
+console.log('=== Document Factory ===');
+const pdfDoc = DocumentFactory.createDocument('pdf');
+pdfDoc.create();
+pdfDoc.save();
+
+console.log('\\n=== Payment Factory ===');
+const paypalPayment = PaymentFactory.createPaymentMethod('paypal');
+paypalPayment.processPayment(99.99);
+
+console.log('\\n=== Logger Factory ===');
+const fileLogger = LoggerFactory.createLogger('file', { filename: 'errors.log' });
+fileLogger.log('error', 'Something went wrong!');`,
+          explanation: 'These real-world examples show how Factory Method pattern simplifies object creation, supports different implementations, and makes code more maintainable and extensible.',
+          highlightLines: [37, 83, 131, 144]
+        }
+      }
+    ],
+    quiz: [
+      {
+        id: 'factory-quiz-1',
+        question: 'What is the main purpose of the Factory Method pattern?',
+        options: [
+          'To create only one instance of a class',
+          'To create objects without specifying the exact class to create',
+          'To copy existing objects',
+          'To destroy objects when no longer needed'
+        ],
+        correctAnswer: 1,
+        explanation: 'The Factory Method pattern creates objects without specifying the exact class, allowing for flexible object creation based on parameters or conditions.'
+      },
+      {
+        id: 'factory-quiz-2',
+        question: 'Which principle does the Factory Method pattern primarily support?',
+        options: [
+          'Single Responsibility Principle only',
+          'Liskov Substitution Principle only',
+          'Open/Closed Principle - open for extension, closed for modification',
+          'Interface Segregation Principle only'
+        ],
+        correctAnswer: 2,
+        explanation: 'Factory Method supports the Open/Closed Principle by allowing new product types to be added (extension) without modifying existing factory code (closed for modification).'
+      },
+      {
+        id: 'factory-quiz-3',
+        question: 'In the Factory Method pattern, who decides which specific class to instantiate?',
+        options: [
+          'The client code directly',
+          'The abstract product class',
+          'The concrete factory (creator) subclasses',
+          'The operating system'
+        ],
+        correctAnswer: 2,
+        explanation: 'In Factory Method pattern, the concrete factory (creator) subclasses decide which specific product class to instantiate, not the client code.'
       }
     ]
   }
