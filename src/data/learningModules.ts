@@ -1,6 +1,7 @@
 import { LearningModule, LearningCategory } from '../types';
 import { oopConcepts } from './oopConcepts';
 import { solidConcepts } from './solidConcepts';
+import { designPatterns } from './designPatterns';
 
 // Individual modules that will be under Machine Coding category
 export const machineCodingModules: LearningModule[] = [
@@ -35,7 +36,7 @@ export const machineCodingModules: LearningModule[] = [
     type: 'design-patterns',
     difficulty: 'intermediate', 
     estimatedTime: '4-5 hours',
-    concepts: [] // Will be populated later
+    concepts: designPatterns
   },
   {
     id: 'practice-problems',
