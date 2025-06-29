@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { learningModules } from '../data/learningModules';
 import { ArrowLeft, ChevronRight, CheckCircle } from 'lucide-react';
-import CodeExample from '../components/CodeExample';
+import TypewriterCodeExample from '../components/TypewriterCodeExample';
 import QuizSection from '../components/QuizSection';
 import TypewriterSection from '../components/TypewriterSection';
 import { motion } from 'framer-motion';
@@ -15,6 +15,7 @@ const ConceptPage: React.FC = () => {
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
   const [quizStarted, setQuizStarted] = useState(false);
   const [contentLoaded, setContentLoaded] = useState(false);
+  const [textCompleted, setTextCompleted] = useState(false);
 
   const module = learningModules.find(m => m.slug === moduleSlug);
   const concept = module?.concepts.find(c => c.slug === conceptSlug);
@@ -22,10 +23,21 @@ const ConceptPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setContentLoaded(false);
+    setTextCompleted(false);
     // Small delay to trigger typewriter effect on section change
     const timer = setTimeout(() => setContentLoaded(true), 100);
     return () => clearTimeout(timer);
   }, [activeSection]);
+
+  // Debug effect to track state changes
+  useEffect(() => {
+    console.log('State update:', {
+      contentLoaded,
+      textCompleted,
+      hasCodeExample: !!concept?.sections[activeSection]?.codeExample,
+      codeExample: concept?.sections[activeSection]?.codeExample
+    });
+  }, [contentLoaded, textCompleted, concept, activeSection]);
 
   if (!module || !concept) {
     return (
@@ -53,7 +65,12 @@ const ConceptPage: React.FC = () => {
   };
 
   const handleTypewriterComplete = () => {
-    // Auto-enable the next button after typewriter completes
+    console.log('Text typewriter completed, showing code block...');
+    setTextCompleted(true);
+  };
+
+  const handleCodeComplete = () => {
+    console.log('Code typewriter completed');
   };
 
   return (
@@ -118,7 +135,7 @@ const ConceptPage: React.FC = () => {
               <div className="prose prose-lg max-w-none">
                 <TypewriterSection
                   content={contentToParagraphs(concept.sections[activeSection].content)}
-                  speed={25}
+                  speed={5}
                   paragraphDelay={300}
                   onComplete={handleTypewriterComplete}
                   showThinking={true}
@@ -126,9 +143,14 @@ const ConceptPage: React.FC = () => {
               </div>
             )}
 
-            {concept.sections[activeSection].codeExample && (
+            {concept.sections[activeSection].codeExample && textCompleted && (
               <div className="mt-8">
-                <CodeExample example={concept.sections[activeSection].codeExample!} />
+                <TypewriterCodeExample 
+                  example={concept.sections[activeSection].codeExample!} 
+                  speed={1}
+                  delay={500}
+                  onComplete={handleCodeComplete}
+                />
               </div>
             )}
 
@@ -147,7 +169,12 @@ const ConceptPage: React.FC = () => {
               
               <button
                 onClick={handleSectionComplete}
-                className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+                disabled={!textCompleted && !!concept.sections[activeSection].codeExample}
+                className={`flex items-center px-6 py-2 rounded-md font-medium ${
+                  !textCompleted && !!concept.sections[activeSection].codeExample
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 {activeSection === concept.sections.length - 1 ? 'Start Quiz' : 'Next Section'}
                 <ChevronRight className="h-4 w-4 ml-2" />

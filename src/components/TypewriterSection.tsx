@@ -13,7 +13,7 @@ interface TypewriterSectionProps {
 
 const TypewriterSection: React.FC<TypewriterSectionProps> = ({
   content,
-  speed = 30,
+  speed = 6,
   paragraphDelay = 500,
   className = '',
   onComplete,

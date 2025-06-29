@@ -11,7 +11,7 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({
   text,
-  speed = 50,
+  speed = 10,
   delay = 0,
   className = '',
   onComplete,

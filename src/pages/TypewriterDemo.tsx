@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import TypewriterText from '../components/TypewriterText';
 import TypewriterSection from '../components/TypewriterSection';
+import TypewriterCodeExample from '../components/TypewriterCodeExample';
 import { ArrowLeft, Play, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,6 +17,14 @@ const TypewriterDemo: React.FC = () => {
     "When you create an actual car from this blueprint, you get an 'object' - a specific instance with actual values like 'red Toyota Camry' that can perform those actions.",
     "This approach makes code more organized, reusable, and easier to understand - just like how organizing your belongings makes your life more manageable!"
   ];
+
+  const codeExample = {
+    id: 'demo-code-example',
+    title: 'Java Class Example',
+    language: 'java' as const,
+    code: `public class Car {\n  private String brand;\n  private String model;\n\n  public Car(String brand, String model) {\n    this.brand = brand;\n    this.model = model;\n  }\n\n  public void start() {\n    System.out.println("Engine started!");\n  }`,
+    explanation: 'A simple class definition in Java.'
+  };
 
   const resetDemo = (demoName: string) => {
     setActiveDemo(null);
@@ -141,32 +150,23 @@ const TypewriterDemo: React.FC = () => {
           </button>
         </div>
         
-        <div className="bg-gray-900 rounded-lg p-4 min-h-[150px] font-mono text-green-400">
+        <div className="min-h-[250px]">
           {activeDemo === 'code' && (
-            <TypewriterText
-              text={`class Car {
-  constructor(brand, model) {
-    this.brand = brand;
-    this.model = model;
-  }
-  
-  start() {
-    console.log('Engine started!');
-  }
-}`}
-              speed={30}
-              className="whitespace-pre-line"
-              cursor={true}
+            <TypewriterCodeExample
+              example={codeExample}
+              speed={3}
             />
           )}
           {activeDemo !== 'code' && (
-            <button
-              onClick={() => setActiveDemo('code')}
-              className="flex items-center text-green-400 hover:text-green-300"
-            >
-              <Play className="h-4 w-4 mr-2" />
-              Animate Code
-            </button>
+             <div className="bg-gray-900 rounded-lg p-4 flex items-center justify-center min-h-[250px]">
+                <button
+                onClick={() => setActiveDemo('code')}
+                className="flex items-center text-white hover:text-gray-200"
+                >
+                <Play className="h-4 w-4 mr-2" />
+                Animate Code
+                </button>
+            </div>
           )}
         </div>
       </motion.div>
@@ -216,4 +216,4 @@ const TypewriterDemo: React.FC = () => {
   );
 };
 
-export default TypewriterDemo; 
+export default TypewriterDemo;
